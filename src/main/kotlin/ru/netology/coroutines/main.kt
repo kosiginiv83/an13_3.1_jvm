@@ -40,33 +40,45 @@ fun main() {
 
                 // Version 1
 //                for (post in posts) {
-//                    println(post.post.printPost(getAuthor(client, post.post.authorId).name))
+//                    println(post.post.getPost(getAuthor(client, post.post.authorId).name))
 //                    for (comment in post.comments) {
-//                        println(comment.printComment(getAuthor(client, comment.authorId).name))
+//                        println(comment.getComment(getAuthor(client, comment.authorId).name))
 //                    }
 //                }
 
                 // Version 2
 //                posts.map { post ->
 //                    async {
-//                        println(post.post.printPost(getAuthor(client, post.post.authorId).name))
+//                        println(post.post.getPost(getAuthor(client, post.post.authorId).name))
 //                        post.comments.map { comment ->
 //                            async {
-//                                println(comment.printComment(getAuthor(client, comment.authorId).name))
+//                                println(comment.getComment(getAuthor(client, comment.authorId).name))
 //                            }.await()
 //                        }
 //                    }.await()
 //                }
 
                 // Version 3
+//                posts.map { post ->
+//                    withContext(Dispatchers.Default) {
+//                        println(post.post.getPost(getAuthor(client, post.post.authorId).name))
+//                        post.comments.map { comment ->
+//                            withContext(Dispatchers.Default) {
+//                                println(comment.getComment(getAuthor(client, comment.authorId).name))
+//                            }
+//                        }
+//                    }
+//                }
+
+                // Version 4
                 posts.map { post ->
                     withContext(Dispatchers.Default) {
                         println(post.post.getPost(getAuthor(client, post.post.authorId).name))
                         post.comments.map { comment ->
-                            withContext(Dispatchers.Default) {
+                            async {
                                 println(comment.getComment(getAuthor(client, comment.authorId).name))
                             }
-                        }
+                        }.awaitAll()
                     }
                 }
 
